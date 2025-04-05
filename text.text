@@ -1,0 +1,7 @@
+ <div className="flex items-center gap-4">
+          <LoginLink className={buttonVariants()}>Sign in</LoginLink>
+
+          <RegisterLink className={buttonVariants({ variant: "secondary" })}>
+            Sign up
+          </RegisterLink>
+        </div>

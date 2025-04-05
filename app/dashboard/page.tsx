@@ -1,5 +1,9 @@
 export default function Dashboard(){
-    return <>
-    <h1>Hello From The Dashboard Page</h1>
-    </>
+    return(
+        <>
+        <div>
+            <h1>Sunil Neupane dashboard</h1>
+        </div>
+        </>
+    )
 }
