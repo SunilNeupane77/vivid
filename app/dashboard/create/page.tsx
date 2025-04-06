@@ -1,11 +1,11 @@
 import { handleSubission } from "@/app/actions";
-import { Button } from "@/components/ui/button";
+import { SubmitButton } from "@/components/general/SubmitButton";
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -36,7 +36,7 @@ export default function Dashboard() {
                 <Label>Image Url</Label>
                 <Input name="url" required type="url" placeholder="Image Url" />
               </div>
-              <Button>Create Post</Button>
+              <SubmitButton/>
             </form>
           </CardContent>
         </Card>

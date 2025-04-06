@@ -1,45 +1,136 @@
-// next.config.js
-import type { NextConfig } from 'next'
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   images: {
-    domains: [
-      // Facebook
-      'www.facebook.com',
-      'facebook.com',
-      '*.fbcdn.net',
-      '*.facebook.com',
-      
-      // Twitter
-      'twitter.com',
-      'pbs.twimg.com', // Twitter images
-      'abs.twimg.com', // Twitter assets
-      
-      // Instagram
-      'instagram.com',
-      '*.cdninstagram.com',
-      '*.fbcdn.net', // Also used by Instagram
-      
-      // Google
-      'google.com',
-      '*.googleusercontent.com',
-      '*.ggpht.com', // Google hosted images
-      
-      // Snapchat
-      'snapchat.com',
-      '*.sc-cdn.net',
-      'images.unsnap.com',
-      
-      // Add any other domains you need
-    ],
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**', // This allows all HTTPS domains (use with caution)
+        hostname: 'facebook.com',
+        port: '',
+        pathname: '/**',
       },
-    ],
-  },
-  // ... rest of your config
-}
+      {
+        protocol: 'https',
+        hostname: '*.facebook.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'google.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.google.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'instagram.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.instagram.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'whatsapp.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.whatsapp.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'twitter.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.twitter.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'x.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'youtube.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.youtube.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'linkedin.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.linkedin.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'encrypted-tbn0.gstatic.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cloudinary.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.cloudinary.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn.britannica.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'imgs.search.brave.com',
+        port: '',
+        pathname: '/**',
+      }
+    ]
+  }
+};
 
-export default nextConfig
+export default nextConfig;
