@@ -14,7 +14,7 @@ if(!user){
 const title = formData.get("title");
 const content = formData.get("content");
 const url = formData.get("url");
- await prisma.blogPost.create({
+const data=await prisma.blogPost.create({
     data: {
         title: title as string,
         content: content as string,
