@@ -98,18 +98,9 @@ export default async function Home() {
   
   return (
     <main className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative bg-gray-900 text-white py-20">
-        <div className="absolute inset-0 overflow-hidden">
-          <Image
-            src="/hero-bg.jpg"
-            alt="Background"
-            fill
-            className="object-cover opacity-30"
-            priority
-          />
-        </div>
-        <div className="container mx-auto px-4 relative z-10">
+      {/* Hero Section - Background image removed */}
+      <section className="bg-gray-900 text-white py-20">
+        <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-6">Discover Amazing Content</h1>
             <p className="text-xl text-gray-300 mb-8">Explore our latest articles on technology, design, and more.</p>
