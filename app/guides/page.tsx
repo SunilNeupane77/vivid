@@ -1,10 +1,22 @@
 import { prisma } from "@/app/utils/db";
 import Image from "next/image";
 import Link from "next/link";
-import { ReactElement } from 'react';
+import { ReactElement } from "react";
+
+interface Guide {
+  id: string;
+  title: string;
+  description?: string;
+  content: string;
+  category?: string;
+  imageUrl?: string;
+  createdAt: string | Date;
+  authorName: string;
+  authorImage: string;
+}
 
 const GuidesPage = async (): Promise<ReactElement> => {
-  const guides = await prisma.blogPost.findMany({
+  const guides: Guide[] = await prisma.blogPost.findMany({
     orderBy: {
       createdAt: "desc",
     },
@@ -20,18 +32,20 @@ const GuidesPage = async (): Promise<ReactElement> => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {guides.map((guide) => (
-          <GuideCard key={guide.id} guide={guide} />
-        ))}
-      </div>
-
-      {guides.length === 0 && <EmptyState />}
+      {guides.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {guides.map((guide) => (
+            <GuideCard key={guide.id} guide={guide} />
+          ))}
+        </div>
+      ) : (
+        <EmptyState />
+      )}
     </div>
   );
 };
 
-const GuideCard = ({ guide }: { guide: any }): ReactElement => (
+const GuideCard = ({ guide }: { guide: Guide }): ReactElement => (
   <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-100">
     <Link href={`/guides/${guide.id}`} className="block h-full">
       <div className="relative h-48 w-full bg-gray-50">
@@ -49,13 +63,13 @@ const GuideCard = ({ guide }: { guide: any }): ReactElement => (
         <div className="flex-grow">
           <div className="flex items-center gap-2 mb-3">
             <span className="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
-              {guide.category || 'General'}
+              {guide.category || "General"}
             </span>
             <span className="text-sm text-gray-500">
-              {new Date(guide.createdAt).toLocaleDateString('en-US', {
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric'
+              {new Date(guide.createdAt).toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
               })}
             </span>
           </div>
@@ -84,12 +98,24 @@ const GuideCard = ({ guide }: { guide: any }): ReactElement => (
 const EmptyState = (): ReactElement => (
   <div className="text-center py-20">
     <div className="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
-      <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+      <svg
+        className="w-12 h-12 text-gray-400"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={1.5}
+          d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+        />
       </svg>
     </div>
     <h3 className="text-xl font-medium mb-2">No guides available</h3>
-    <p className="text-gray-500 max-w-md mx-auto">Check back later for new guides</p>
+    <p className="text-gray-500 max-w-md mx-auto">
+      Check back later for new guides
+    </p>
   </div>
 );
 

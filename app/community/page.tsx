@@ -13,7 +13,7 @@ export default function CommunityPage() {
         
         <h1 className="text-3xl font-bold text-gray-900 mb-3">Community Coming Soon</h1>
         <p className="text-gray-600 mb-6">
-          We're building an amazing community space for you to connect with others. 
+          We&apos;re building an amazing community space for you to connect with others. 
           Stay tuned for updates!
         </p>
 
