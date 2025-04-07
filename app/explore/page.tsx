@@ -1,15 +1,27 @@
+// app/explore/page.tsx
+
 import { prisma } from "@/app/utils/db";
 import Image from "next/image";
 import Link from "next/link";
 import { ReactElement } from "react";
 import { FiArrowRight, FiCalendar, FiSearch } from "react-icons/fi";
 
-interface ExplorePageProps {
-  searchParams?: { [key: string]: string | string[] | undefined };
+interface Post {
+  id: string;
+  title: string;
+  content: string;
+  imageUrl: string;
+  authorImage: string;
+  authorName: string;
+  createdAt: Date;
 }
 
-async function getPosts(searchParams: { [key: string]: string | string[] | undefined }) {
-  const searchQuery = typeof searchParams.search === "string" ? searchParams.search : undefined;
+type ExplorePageProps = {
+  searchParams?: { [key: string]: string | string[] };
+};
+
+async function getPosts(searchParams: ExplorePageProps["searchParams"]): Promise<Post[]> {
+  const searchQuery = typeof searchParams?.search === "string" ? searchParams.search : undefined;
 
   return await prisma.blogPost.findMany({
     where: {
@@ -67,7 +79,7 @@ export default async function ExplorePage({
         </div>
       </div>
 
-      {/* Main Content */}
+      {/* Posts Section */}
       <div className="container mx-auto px-4 py-12">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-2xl font-bold text-gray-900">
