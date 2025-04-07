@@ -1,37 +1,40 @@
 import { prisma } from "@/app/utils/db";
 import Image from "next/image";
 import Link from "next/link";
+import { ReactElement } from "react";
 import { FiArrowRight, FiCalendar, FiSearch } from "react-icons/fi";
 
-async function getPosts(searchParams: { [key: string]: string | string[] | undefined }) {
-  const searchQuery = searchParams.search ? String(searchParams.search) : undefined;
+interface ExplorePageProps {
+  searchParams?: { [key: string]: string | string[] | undefined };
+}
 
-  const data = await prisma.blogPost.findMany({
+async function getPosts(searchParams: { [key: string]: string | string[] | undefined }) {
+  const searchQuery = typeof searchParams.search === "string" ? searchParams.search : undefined;
+
+  return await prisma.blogPost.findMany({
     where: {
-      title: searchQuery ? { contains: searchQuery, mode: 'insensitive' } : undefined,
+      title: searchQuery ? { contains: searchQuery, mode: "insensitive" } : undefined,
     },
     select: {
+      id: true,
       title: true,
       content: true,
       imageUrl: true,
       authorImage: true,
       authorName: true,
-      id: true,
       createdAt: true,
     },
     orderBy: {
-      createdAt: 'desc'
-    }
+      createdAt: "desc",
+    },
   });
-  return data;
 }
 
 export default async function ExplorePage({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
+  searchParams = {},
+}: ExplorePageProps): Promise<ReactElement> {
   const posts = await getPosts(searchParams);
+  const searchTerm = typeof searchParams.search === "string" ? searchParams.search : "";
 
   return (
     <main className="min-h-screen bg-gray-50">
@@ -40,8 +43,6 @@ export default async function ExplorePage({
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">Explore Our Content</h1>
-            
-            {/* Search Bar */}
             <form className="max-w-2xl mx-auto">
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -51,7 +52,7 @@ export default async function ExplorePage({
                   type="text"
                   name="search"
                   placeholder="Search posts..."
-                  defaultValue={searchParams.search}
+                  defaultValue={searchTerm}
                   className="block w-full pl-10 pr-12 py-4 border border-transparent rounded-lg bg-white/90 focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent text-gray-900 placeholder-gray-500"
                 />
                 <button
@@ -68,21 +69,22 @@ export default async function ExplorePage({
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-12">
-        {/* Results Header */}
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-2xl font-bold text-gray-900">
-            {searchParams.search ? `Search: "${searchParams.search}"` : 'All Posts'}
+            {searchTerm ? `Search: "${searchTerm}"` : "All Posts"}
           </h2>
           <div className="text-sm text-gray-500">
-            {posts.length} {posts.length === 1 ? 'post' : 'posts'} found
+            {posts.length} {posts.length === 1 ? "post" : "posts"} found
           </div>
         </div>
 
-        {/* Posts Grid */}
         {posts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {posts.map((post) => (
-              <div key={post.id} className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+              <div
+                key={post.id}
+                className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow"
+              >
                 <Link href={`/post/${post.id}`} className="block h-full">
                   <div className="relative h-48 w-full overflow-hidden">
                     <Image
@@ -94,7 +96,9 @@ export default async function ExplorePage({
                     />
                   </div>
                   <div className="p-6">
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2 line-clamp-2">{post.title}</h3>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2 line-clamp-2">
+                      {post.title}
+                    </h3>
                     <p className="text-gray-600 mb-4 line-clamp-2">{post.content}</p>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
@@ -110,10 +114,10 @@ export default async function ExplorePage({
                       </div>
                       <div className="flex items-center text-sm text-gray-500">
                         <FiCalendar className="mr-1" />
-                        {new Date(post.createdAt).toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric'
+                        {new Date(post.createdAt).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
                         })}
                       </div>
                     </div>
@@ -129,9 +133,9 @@ export default async function ExplorePage({
             </div>
             <h3 className="text-xl font-medium text-gray-900 mb-2">No posts found</h3>
             <p className="text-gray-600 mb-6">
-              {searchParams.search 
-                ? `No results for "${searchParams.search}". Try a different search term.`
-                : 'There are currently no posts available.'}
+              {searchTerm
+                ? `No results for "${searchTerm}". Try a different search term.`
+                : "There are currently no posts available."}
             </p>
             <Link
               href="/explore"
