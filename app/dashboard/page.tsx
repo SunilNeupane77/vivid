@@ -17,7 +17,7 @@ type BlogPost = {
   authorId: string;
 };
 
-// Define props expected by BlogPostCard
+// Define props expected by BlogPostCard (adjusted to match component expectations)
 interface BlogPostCardProps {
   id: string;
   title: string;
@@ -25,9 +25,9 @@ interface BlogPostCardProps {
   imageUrl: string;
   authorName: string;
   authorImage: string;
-  createdAt?: string; // Formatted date string
-  updatedAt?: string; // Formatted date string
-  authorId: string; // Add authorId to match BlogPost and component expectations
+  createdAt?: Date; // Changed to Date to match BlogPostCard expectations
+  updatedAt?: Date; // Changed to Date to match BlogPostCard expectations
+  authorId: string;
 }
 
 async function getData(userId: string): Promise<BlogPost[]> {
@@ -95,21 +95,9 @@ export default async function CreateBlogRoute() {
             imageUrl: item.imageUrl || "/default-cover.jpg",
             authorName: item.authorName || "Unknown Author",
             authorImage: item.authorImage || "/default-avatar.jpg",
-            createdAt: item.createdAt
-              ? new Date(item.createdAt).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric",
-                })
-              : undefined,
-            updatedAt: item.updatedAt
-              ? new Date(item.updatedAt).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric",
-                })
-              : undefined,
-            authorId: item.authorId, // Add authorId here
+            createdAt: item.createdAt, // Pass raw Date object
+            updatedAt: item.updatedAt, // Pass raw Date object
+            authorId: item.authorId,
           };
           return <BlogPostCard key={item.id} {...blogPostCardProps} />;
         })}
