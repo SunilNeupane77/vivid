@@ -3,11 +3,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { FiArrowRight, FiCalendar, FiSearch } from "react-icons/fi";
 
-export default async function ExplorePage({
-  searchParams,
-}: {
-  searchParams?: { [key: string]: string | string[] | undefined };
-}) {
+// Define the props type explicitly to satisfy Next.js page requirements
+type ExplorePageProps = {
+  searchParams: { [key: string]: string | string[] | undefined };
+};
+
+export default async function ExplorePage({ searchParams }: ExplorePageProps) {
   const searchTerm =
     typeof searchParams?.search === "string" ? searchParams.search : "";
 
@@ -18,6 +19,15 @@ export default async function ExplorePage({
         : undefined,
     },
     orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      title: true,
+      content: true,
+      imageUrl: true,
+      authorName: true,
+      authorImage: true,
+      createdAt: true,
+    }, // Select only needed fields to optimize database query
   });
 
   return (
@@ -74,13 +84,14 @@ export default async function ExplorePage({
                 className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow"
               >
                 <Link href={`/post/${post.id}`} className="block h-full">
-                  <div className="relative h-48 w-full overflow-hidden">
+                  <div className="relative h-48 w-full">
                     <Image
-                      src={post.imageUrl}
+                      src={post.imageUrl || "/fallback-image.jpg"} // Fallback for missing images
                       alt={post.title}
                       fill
                       className="object-cover transition-transform duration-500 hover:scale-105"
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      priority={false} // Set to true if this is above-the-fold content
                     />
                   </div>
                   <div className="p-6">
@@ -88,27 +99,26 @@ export default async function ExplorePage({
                       {post.title}
                     </h3>
                     <p className="text-gray-600 mb-4 line-clamp-2">
-                      {post.content}
+                      {post.content ?? "No content available"}
                     </p>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
                         <div className="relative h-8 w-8 rounded-full overflow-hidden mr-3">
                           <Image
-                            src={post.authorImage}
-                            alt={post.authorName}
+                            src={
+                              post.authorImage || "/default-avatar.jpg" // Fallback for missing author image
+                            }
+                            alt={post.authorName || "Unknown Author"}
                             width={32}
                             height={32}
                             className="object-cover"
                           />
                         </div>
                         <span className="text-sm font-medium text-gray-700">
-                          {post.authorName}
+                          {post.authorName || "Unknown Author"}
                         </span>
                       </div>
-                      <div
-                        className="flex items-center text-sm text-gray-500"
-                        suppressHydrationWarning
-                      >
+                      <div className="flex items-center text-sm text-gray-500">
                         <FiCalendar className="mr-1" />
                         {new Date(post.createdAt).toLocaleDateString("en-US", {
                           month: "short",
@@ -127,7 +137,9 @@ export default async function ExplorePage({
             <div className="mx-auto mb-6 text-gray-300">
               <FiSearch className="h-20 w-20 inline-block" />
             </div>
-            <h3 className="text-xl font-medium text-gray-900 mb-2">No posts found</h3>
+            <h3 className="text-xl font-medium text-gray-900 mb-2">
+              No posts found
+            </h3>
             <p className="text-gray-600 mb-6">
               {searchTerm
                 ? `No results for "${decodeURIComponent(
@@ -148,3 +160,6 @@ export default async function ExplorePage({
     </main>
   );
 }
+
+// Optional: Configure runtime to ensure server-side execution
+export const dynamic = "force-dynamic"; // Ensures the page is always server-rendered
