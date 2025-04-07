@@ -3,7 +3,6 @@
 import { prisma } from "@/app/utils/db";
 import Image from "next/image";
 import Link from "next/link";
-import { ReactElement } from "react";
 import { FiArrowRight, FiCalendar, FiSearch } from "react-icons/fi";
 
 interface Post {
@@ -16,18 +15,17 @@ interface Post {
   createdAt: Date;
 }
 
-// FIXED: Correct typing for PageProps in Next.js App Router
-type PageProps = {
-  searchParams?: Record<string, string | string[] | undefined>;
-};
+export default async function Page({
+  searchParams,
+}: {
+  searchParams?: { [key: string]: string | string[] };
+}) {
+  const searchTerm =
+    typeof searchParams?.search === "string" ? searchParams.search : "";
 
-async function getPosts(searchParams?: PageProps["searchParams"]): Promise<Post[]> {
-  const searchQuery =
-    typeof searchParams?.search === "string" ? searchParams.search : undefined;
-
-  return await prisma.blogPost.findMany({
+  const posts: Post[] = await prisma.blogPost.findMany({
     where: {
-      title: searchQuery ? { contains: searchQuery, mode: "insensitive" } : undefined,
+      title: searchTerm ? { contains: searchTerm, mode: "insensitive" } : undefined,
     },
     select: {
       id: true,
@@ -42,14 +40,6 @@ async function getPosts(searchParams?: PageProps["searchParams"]): Promise<Post[
       createdAt: "desc",
     },
   });
-}
-
-export default async function ExplorePage({
-  searchParams,
-}: PageProps): Promise<ReactElement> {
-  const posts = await getPosts(searchParams);
-  const searchTerm =
-    typeof searchParams?.search === "string" ? searchParams.search : "";
 
   return (
     <main className="min-h-screen bg-gray-50">
