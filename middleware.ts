@@ -6,7 +6,7 @@ export default withAuth(
   },
   {
     // Define public paths that don't require authentication
-    publicPaths: ["/"],
+    publicPaths: ["https://vivid-gu87.vercel.app"],
     // Optional: You can specify where to redirect unauthenticated users
     loginPage: "/dashboard",
     // Optional: Where to redirect after login
