@@ -3,14 +3,21 @@ import Image from "next/image";
 import Link from "next/link";
 import { FiArrowRight, FiCalendar, FiSearch } from "react-icons/fi";
 
-// Define the props type explicitly to satisfy Next.js page requirements
+// Import Next.js built-in type for page props
+
+// Define the props type using Next.js expectations
 type ExplorePageProps = {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
+// Use async function with proper typing
 export default async function ExplorePage({ searchParams }: ExplorePageProps) {
+  // Await the searchParams Promise to get the actual values
+  const resolvedSearchParams = await searchParams;
   const searchTerm =
-    typeof searchParams?.search === "string" ? searchParams.search : "";
+    typeof resolvedSearchParams?.search === "string"
+      ? resolvedSearchParams.search
+      : "";
 
   const posts = await prisma.blogPost.findMany({
     where: {
@@ -161,5 +168,5 @@ export default async function ExplorePage({ searchParams }: ExplorePageProps) {
   );
 }
 
-// Optional: Configure runtime to ensure server-side execution
+// Configure runtime to ensure server-side execution
 export const dynamic = "force-dynamic"; // Ensures the page is always server-rendered
