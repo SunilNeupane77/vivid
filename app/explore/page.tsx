@@ -1,5 +1,3 @@
-// app/explore/page.tsx
-
 import { prisma } from "@/app/utils/db";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,30 +13,22 @@ interface Post {
   createdAt: Date;
 }
 
-export default async function Page({
+export default async function ExplorePage({
   searchParams,
 }: {
-  searchParams?: { [key: string]: string | string[] };
+  searchParams?: { [key: string]: string | string[] | undefined };
 }) {
-  const searchTerm =
-    typeof searchParams?.search === "string" ? searchParams.search : "";
+  const searchTerm = typeof searchParams?.search === "string" 
+    ? searchParams.search 
+    : "";
 
-  const posts: Post[] = await prisma.blogPost.findMany({
+  const posts = await prisma.blogPost.findMany({
     where: {
-      title: searchTerm ? { contains: searchTerm, mode: "insensitive" } : undefined,
+      title: searchTerm 
+        ? { contains: searchTerm, mode: "insensitive" } 
+        : undefined,
     },
-    select: {
-      id: true,
-      title: true,
-      content: true,
-      imageUrl: true,
-      authorImage: true,
-      authorName: true,
-      createdAt: true,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
+    orderBy: { createdAt: "desc" },
   });
 
   return (
@@ -78,7 +68,7 @@ export default async function Page({
       <div className="container mx-auto px-4 py-12">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-2xl font-bold text-gray-900">
-            {searchTerm ? `Search: "${searchTerm}"` : "All Posts"}
+            {searchTerm ? `Search: &quot;${searchTerm}&quot;` : "All Posts"}
           </h2>
           <div className="text-sm text-gray-500">
             {posts.length} {posts.length === 1 ? "post" : "posts"} found
@@ -100,6 +90,7 @@ export default async function Page({
                       fill
                       className="object-cover transition-transform duration-500 hover:scale-105"
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      priority={false}
                     />
                   </div>
                   <div className="p-6">
@@ -115,7 +106,8 @@ export default async function Page({
                           <Image
                             src={post.authorImage}
                             alt={post.authorName}
-                            fill
+                            width={32}
+                            height={32}
                             className="object-cover"
                           />
                         </div>
@@ -145,7 +137,7 @@ export default async function Page({
             <h3 className="text-xl font-medium text-gray-900 mb-2">No posts found</h3>
             <p className="text-gray-600 mb-6">
               {searchTerm
-                ? `No results for "${searchTerm}". Try a different search term.`
+                ? `No results for &quot;${searchTerm}&quot;. Try a different search term.`
                 : "There are currently no posts available."}
             </p>
             <Link
