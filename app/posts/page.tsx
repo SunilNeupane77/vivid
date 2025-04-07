@@ -3,26 +3,33 @@ import Image from "next/image";
 import Link from "next/link";
 import { FiCalendar, FiSearch } from "react-icons/fi";
 
+// Define the props type with searchParams as a Promise
+type PostsPageProps = {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
 async function getPosts(searchTerm?: string) {
   return await prisma.blogPost.findMany({
-    where: searchTerm ? {
-      OR: [
-        { title: { contains: searchTerm, mode: "insensitive" } },
-        { content: { contains: searchTerm, mode: "insensitive" } }
-      ]
-    } : undefined,
+    where: searchTerm
+      ? {
+          OR: [
+            { title: { contains: searchTerm, mode: "insensitive" } },
+            { content: { contains: searchTerm, mode: "insensitive" } },
+          ],
+        }
+      : undefined,
     orderBy: {
-      createdAt: "desc"
-    }
+      createdAt: "desc",
+    },
   });
 }
 
-export default async function PostsPage({
-  searchParams
-}: {
-  searchParams: { [key: string]: string | string[] | undefined }
-}) {
-  const searchTerm = searchParams.search ? String(searchParams.search) : undefined;
+export default async function PostsPage({ searchParams }: PostsPageProps) {
+  // Await the searchParams Promise to get the actual values
+  const resolvedSearchParams = await searchParams;
+  const searchTerm = resolvedSearchParams.search
+    ? String(resolvedSearchParams.search)
+    : undefined;
   const posts = await getPosts(searchTerm);
 
   return (
@@ -61,7 +68,10 @@ export default async function PostsPage({
       {posts.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {posts.map((post) => (
-            <article key={post.id} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+            <article
+              key={post.id}
+              className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+            >
               <Link href={`/posts/${post.id}`} className="block h-full">
                 {/* Cover Image */}
                 <div className="relative h-48 w-full overflow-hidden">
@@ -76,9 +86,11 @@ export default async function PostsPage({
 
                 {/* Content */}
                 <div className="p-6">
-                  <h2 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">{post.title}</h2>
+                  <h2 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">
+                    {post.title}
+                  </h2>
                   <p className="text-gray-600 mb-4 line-clamp-3">
-                    {post.content.substring(0, 150)}...
+                    {(post.content ?? "").substring(0, 150)}...
                   </p>
 
                   {/* Author and Date */}
@@ -87,19 +99,21 @@ export default async function PostsPage({
                       <div className="relative h-8 w-8 rounded-full overflow-hidden mr-3">
                         <Image
                           src={post.authorImage || "/default-avatar.jpg"}
-                          alt={post.authorName}
+                          alt={post.authorName || "Unknown Author"}
                           fill
                           className="object-cover"
                         />
                       </div>
-                      <span className="text-sm font-medium text-gray-700">{post.authorName}</span>
+                      <span className="text-sm font-medium text-gray-700">
+                        {post.authorName || "Unknown Author"}
+                      </span>
                     </div>
                     <div className="flex items-center text-sm text-gray-500">
                       <FiCalendar className="mr-1" />
                       {new Date(post.createdAt).toLocaleDateString("en-US", {
                         year: "numeric",
                         month: "short",
-                        day: "numeric"
+                        day: "numeric",
                       })}
                     </div>
                   </div>
@@ -113,7 +127,9 @@ export default async function PostsPage({
           <div className="mx-auto w-24 h-24 text-gray-400 mb-4">
             <FiSearch className="w-full h-full" />
           </div>
-          <h3 className="text-xl font-medium text-gray-900 mb-2">No posts found</h3>
+          <h3 className="text-xl font-medium text-gray-900 mb-2">
+            No posts found
+          </h3>
           <p className="text-gray-600 mb-6">
             {searchTerm
               ? `No results for "${searchTerm}". Try a different search term.`
@@ -132,3 +148,6 @@ export default async function PostsPage({
     </main>
   );
 }
+
+// Configure runtime for server-side rendering
+export const dynamic = "force-dynamic"; // Ensures the page is always server-rendered
