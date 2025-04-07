@@ -3,29 +3,18 @@ import Image from "next/image";
 import Link from "next/link";
 import { FiArrowRight, FiCalendar, FiSearch } from "react-icons/fi";
 
-interface Post {
-  id: string;
-  title: string;
-  content: string;
-  imageUrl: string;
-  authorImage: string;
-  authorName: string;
-  createdAt: Date;
-}
-
 export default async function ExplorePage({
   searchParams,
 }: {
   searchParams?: { [key: string]: string | string[] | undefined };
 }) {
-  const searchTerm = typeof searchParams?.search === "string" 
-    ? searchParams.search 
-    : "";
+  const searchTerm =
+    typeof searchParams?.search === "string" ? searchParams.search : "";
 
   const posts = await prisma.blogPost.findMany({
     where: {
-      title: searchTerm 
-        ? { contains: searchTerm, mode: "insensitive" } 
+      title: searchTerm
+        ? { contains: searchTerm, mode: "insensitive" }
         : undefined,
     },
     orderBy: { createdAt: "desc" },
@@ -68,7 +57,9 @@ export default async function ExplorePage({
       <div className="container mx-auto px-4 py-12">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-2xl font-bold text-gray-900">
-            {searchTerm ? `Search: &quot;${searchTerm}&quot;` : "All Posts"}
+            {searchTerm
+              ? `Search: "${decodeURIComponent(searchTerm)}"`
+              : "All Posts"}
           </h2>
           <div className="text-sm text-gray-500">
             {posts.length} {posts.length === 1 ? "post" : "posts"} found
@@ -90,7 +81,6 @@ export default async function ExplorePage({
                       fill
                       className="object-cover transition-transform duration-500 hover:scale-105"
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      priority={false}
                     />
                   </div>
                   <div className="p-6">
@@ -115,7 +105,10 @@ export default async function ExplorePage({
                           {post.authorName}
                         </span>
                       </div>
-                      <div className="flex items-center text-sm text-gray-500">
+                      <div
+                        className="flex items-center text-sm text-gray-500"
+                        suppressHydrationWarning
+                      >
                         <FiCalendar className="mr-1" />
                         {new Date(post.createdAt).toLocaleDateString("en-US", {
                           month: "short",
@@ -137,7 +130,9 @@ export default async function ExplorePage({
             <h3 className="text-xl font-medium text-gray-900 mb-2">No posts found</h3>
             <p className="text-gray-600 mb-6">
               {searchTerm
-                ? `No results for &quot;${searchTerm}&quot;. Try a different search term.`
+                ? `No results for "${decodeURIComponent(
+                    searchTerm
+                  )}". Try a different search term.`
                 : "There are currently no posts available."}
             </p>
             <Link
