@@ -16,12 +16,14 @@ interface Post {
   createdAt: Date;
 }
 
-type ExplorePageProps = {
-  searchParams?: { [key: string]: string | string[] };
+// FIXED: Correct typing for PageProps in Next.js App Router
+type PageProps = {
+  searchParams?: Record<string, string | string[] | undefined>;
 };
 
-async function getPosts(searchParams: ExplorePageProps["searchParams"]): Promise<Post[]> {
-  const searchQuery = typeof searchParams?.search === "string" ? searchParams.search : undefined;
+async function getPosts(searchParams?: PageProps["searchParams"]): Promise<Post[]> {
+  const searchQuery =
+    typeof searchParams?.search === "string" ? searchParams.search : undefined;
 
   return await prisma.blogPost.findMany({
     where: {
@@ -43,10 +45,11 @@ async function getPosts(searchParams: ExplorePageProps["searchParams"]): Promise
 }
 
 export default async function ExplorePage({
-  searchParams = {},
-}: ExplorePageProps): Promise<ReactElement> {
+  searchParams,
+}: PageProps): Promise<ReactElement> {
   const posts = await getPosts(searchParams);
-  const searchTerm = typeof searchParams.search === "string" ? searchParams.search : "";
+  const searchTerm =
+    typeof searchParams?.search === "string" ? searchParams.search : "";
 
   return (
     <main className="min-h-screen bg-gray-50">
@@ -54,7 +57,9 @@ export default async function ExplorePage({
       <div className="relative bg-gradient-to-r from-blue-600 to-indigo-800 py-20">
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">Explore Our Content</h1>
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              Explore Our Content
+            </h1>
             <form className="max-w-2xl mx-auto">
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -111,7 +116,9 @@ export default async function ExplorePage({
                     <h3 className="text-xl font-semibold text-gray-900 mb-2 line-clamp-2">
                       {post.title}
                     </h3>
-                    <p className="text-gray-600 mb-4 line-clamp-2">{post.content}</p>
+                    <p className="text-gray-600 mb-4 line-clamp-2">
+                      {post.content}
+                    </p>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
                         <div className="relative h-8 w-8 rounded-full overflow-hidden mr-3">
@@ -122,7 +129,9 @@ export default async function ExplorePage({
                             className="object-cover"
                           />
                         </div>
-                        <span className="text-sm font-medium text-gray-700">{post.authorName}</span>
+                        <span className="text-sm font-medium text-gray-700">
+                          {post.authorName}
+                        </span>
                       </div>
                       <div className="flex items-center text-sm text-gray-500">
                         <FiCalendar className="mr-1" />
