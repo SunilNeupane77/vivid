@@ -27,7 +27,7 @@ interface BlogPostCardProps {
   authorImage: string;
   createdAt?: string; // Formatted date string
   updatedAt?: string; // Formatted date string
-  // authorId omitted unless explicitly needed by BlogPostCard
+  authorId: string; // Add authorId to match BlogPost and component expectations
 }
 
 async function getData(userId: string): Promise<BlogPost[]> {
@@ -109,6 +109,7 @@ export default async function CreateBlogRoute() {
                   day: "numeric",
                 })
               : undefined,
+            authorId: item.authorId, // Add authorId here
           };
           return <BlogPostCard key={item.id} {...blogPostCardProps} />;
         })}
@@ -117,5 +118,4 @@ export default async function CreateBlogRoute() {
   );
 }
 
-// Configure runtime for server-side rendering
 export const dynamic = "force-dynamic"; // Ensures the page is always server-rendered
