@@ -6,15 +6,11 @@ import {
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import Image from "next/image"; // Added Image component
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { buttonVariants } from "../ui/button";
 
 const Navbar = async () => {
   const { getUser } = getKindeServerSession();
   const user = await getUser();
-  if(!user){
-    return redirect("/api/auth/register")
-  }
 
   return (
     <div className="bg-gradient-to-r from-gray-900 to-gray-800 shadow-lg">
