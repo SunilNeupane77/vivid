@@ -97,9 +97,10 @@ const Navbar = async () => {
             </LoginLink>
 
             <RegisterLink className={buttonVariants({
-              className: "bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg transition-all"
+              className: "bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg transition-all hidden sm:inline-flex"
             })}>
-              Join the Journey
+              <span className="hidden sm:inline">Join the Journey</span>
+              <span className="sm:hidden">Join</span>
             </RegisterLink>
           </div>
         )}
@@ -109,3 +110,4 @@ const Navbar = async () => {
 };
 
 export default Navbar;
+
